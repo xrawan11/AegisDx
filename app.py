@@ -12,15 +12,25 @@ CORS(app)
 # LOAD AI MODELS
 # =========================
 
-model = joblib.load("amr_resistance_model.pkl")
-
-early_model = joblib.load("early_model.pkl")
-
-diagnostic_model = joblib.load("diagnostic_model.pkl")
-
-diagnosis_encoder = joblib.load(
-    "diagnosis_encoder.pkl"
+from huggingface_hub import hf_hub_download
+amr_model_path = hf_hub_download(
+    repo_id="Rawanx1/aegisdx-models",
+    filename="amr_resistance_model.pkl"
 )
+
+early_model_path = hf_hub_download(
+    repo_id="Rawanx1/aegisdx-models",
+    filename="early_model.pkl"
+)
+
+diagnostic_model_path = hf_hub_download(
+    repo_id="Rawanx1/aegisdx-models",
+    filename="diagnostic_model.pkl"
+)
+
+model = joblib.load(amr_model_path)
+early_model = joblib.load(early_model_path)
+diagnostic_model = joblib.load(diagnostic_model_path)
 
 # =========================
 # FRONTEND ROUTES
