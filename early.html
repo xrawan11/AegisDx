@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1,
+maximum-scale=1,
+user-scalable=no">
+
+<title>Early Prediction</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f8ff;
+    padding:40px;
+}
+
+.page{
+    max-width:1000px;
+    margin:auto;
+    background:white;
+    padding:45px;
+    border-radius:28px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.title{
+    color:#00296b;
+    font-size:48px;
+    font-weight:800;
+}
+
+.subtitle{
+    color:#5f6f87;
+    margin-top:14px;
+    line-height:1.8;
+    font-size:18px;
+}
+
+.section{
+    margin-top:30px;
+}
+
+.label{
+    color:#00296b;
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:18px;
+    border-radius:16px;
+    border:2px solid #dbe8ff;
+    outline:none;
+    font-size:16px;
+}
+
+textarea{
+    min-height:120px;
+    resize:none;
+}
+
+.buttons{
+    display:flex;
+    gap:18px;
+    margin-top:35px;
+}
+
+button{
+    background:#00296b;
+    color:white;
+    border:none;
+    padding:16px 28px;
+    border-radius:16px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:700;
+}
+
+.result-box{
+    margin-top:40px;
+    background:linear-gradient(to bottom right,#ffffff,#f3f8ff);
+    border-left:8px solid #00296b;
+    border-radius:24px;
+    padding:30px;
+    display:none;
+    box-shadow:0 12px 30px rgba(0,0,0,0.08);
+    animation:fadeIn 0.6s ease;
+}
+
+.result-title{
+    color:#00296b;
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:18px;
+}
+
+.result-item{
+    color:#5f6f87;
+    line-height:2;
+    font-size:17px;
+}
+
+.high{
+    color:#d62828;
+    font-weight:700;
+}
+
+.medium{
+    color:#ff8800;
+    font-weight:700;
+}
+
+.low{
+    color:#2a9d8f;
+    font-weight:700;
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.ai-badge{
+    display:inline-block;
+    background:#00296b;
+    color:white;
+    padding:8px 16px;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:18px;
+}
+
+.loading{
+    display:none;
+    margin-top:30px;
+    text-align:center;
+}
+
+.spinner{
+    width:55px;
+    height:55px;
+    border:6px solid #dbe8ff;
+    border-top:6px solid #00296b;
+    border-radius:50%;
+    margin:auto;
+    animation:spin 1s linear infinite;
+}
+
+.loading-text{
+    margin-top:16px;
+    color:#00296b;
+    font-size:18px;
+    font-weight:700;
+}
+
+@keyframes spin{
+
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+.confidence-box{
+    margin-bottom:22px;
+    background:#eaf4ff;
+    color:#00296b;
+    padding:12px 18px;
+    border-radius:14px;
+    font-size:16px;
+    font-weight:700;
+    width:fit-content;
+}
+
+.progress-container{
+    width:100%;
+    height:26px;
+    background:#dbe8ff;
+    border-radius:30px;
+    margin-top:18px;
+    overflow:hidden;
+}
+
+.progress-bar{
+    height:100%;
+    width:0%;
+    background:linear-gradient(to right,#ff6b6b,#d62828);
+    color:white;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:1s;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+<div class="title">
+Early Prediction & Prevention
+</div>
+
+<div class="subtitle">
+AI-powered infection risk prediction and prevention support.
+</div>
+
+<div class="section">
+
+<div class="label">
+Symptoms
+</div>
+
+<textarea id="symptoms"
+placeholder="Enter symptoms..."></textarea>
+
+</div>
+
+<div class="section">
+
+<div class="label">
+Temperature
+</div>
+
+<input id="temperature"
+type="text"
+placeholder="Enter temperature">
+
+</div>
+
+<div class="section">
+
+<div class="label">
+Heart Rate (Optional)
+</div>
+
+<input type="text"
+placeholder="Enter heart rate">
+
+</div>
+
+<div class="section">
+
+<div class="label">
+Duration
+</div>
+
+<input type="text"
+placeholder="Duration of symptoms">
+
+</div>
+
+<div class="section">
+
+<div class="label">
+Patient Age
+</div>
+
+<input type="text"
+placeholder="Enter age">
+
+</div>
+
+<div class="section">
+
+<div class="label">
+Chronic Diseases
+</div>
+
+<input type="text"
+placeholder="Optional">
+
+</div>
+
+<div class="buttons">
+
+<button onclick="predictRisk()">
+Predict Risk
+</button>
+
+<button onclick="generateTips()">
+Generate Prevention Tips
+</button>
+
+</div>
+
+<div id="loadingBox" class="loading">
+
+<div class="spinner"></div>
+
+<div class="loading-text">
+AI is analyzing the case...
+</div>
+
+</div>
+
+<div id="resultBox" class="result-box">
+
+<div class="ai-badge">
+AI Powered Analysis
+</div>
+
+<div class="result-title">
+AI Analysis Result
+</div>
+
+<div class="confidence-box">
+
+AI Confidence:
+<span id="confidenceScore">
+0%
+</span>
+
+</div>
+
+<div class="result-item">
+Risk Level:
+<span id="riskLevel"></span>
+
+<div class="progress-container">
+
+<div id="progressBar" class="progress-bar">
+0%
+</div>
+
+</div>
+
+</div>
+
+<div class="result-item">
+Possible Infection:
+<span id="infectionType"></span>
+</div>
+
+<div class="result-item">
+Prevention Tips:
+<span id="tips"></span>
+</div>
+
+<div class="result-item">
+AI Explanation:
+<span id="explanation"></span>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function predictRisk(){
+
+document.getElementById("loadingBox")
+.style.display = "block";
+
+document.getElementById("resultBox")
+.style.display = "none";
+
+let temp =
+document.getElementById("temperature").value;
+
+let symptoms =
+document.getElementById("symptoms")
+.value
+.toLowerCase();
+
+fetch("https://shadow-residue-headcount.ngrok-free.dev/predict", {
+
+    method:"POST",
+
+    headers:{
+        "Content-Type":"application/json"
+    },
+
+    body:JSON.stringify({
+
+        symptoms:symptoms,
+        temperature:temp
+    })
+})
+
+.then(response => response.json())
+
+.then(data => {
+
+    document.getElementById("confidenceScore")
+    .innerHTML = data.confidence;
+
+    document.getElementById("riskLevel")
+    .innerHTML = data.risk;
+
+    document.getElementById("infectionType")
+    .innerHTML = data.infection;
+
+    document.getElementById("tips")
+    .innerHTML = data.recommendation;
+
+    document.getElementById("explanation")
+    .innerHTML =
+    "Generated by Flask AI backend.";
+
+    let progress = 28;
+
+    if(data.risk.includes("High")){
+
+        progress = 87;
+    }
+
+    document.getElementById("progressBar")
+    .style.width = progress + "%";
+
+    document.getElementById("progressBar")
+    .innerHTML = progress + "%";
+
+    document.getElementById("loadingBox")
+    .style.display = "none";
+
+    document.getElementById("resultBox")
+    .style.display = "block";
+
+})
+
+.catch(error => {
+
+    console.log(error);
+
+    alert("Backend connection failed");
+
+    document.getElementById("loadingBox")
+    .style.display = "none";
+
+});
+
+}
+
+function generateTips(){
+
+document.getElementById("resultBox")
+.style.display = "block";
+
+document.getElementById("confidenceScore")
+.innerHTML = "88%";
+
+document.getElementById("riskLevel")
+.innerHTML =
+"<span class='medium'>Moderate Risk</span>";
+
+document.getElementById("infectionType")
+.innerHTML =
+"Seasonal viral infection";
+
+document.getElementById("tips")
+.innerHTML =
+"Hydration, rest, vitamins, and avoid crowded places.";
+
+document.getElementById("explanation")
+.innerHTML =
+"AI generated personalized prevention guidance.";
+
+document.getElementById("progressBar")
+.style.width = "55%";
+
+document.getElementById("progressBar")
+.innerHTML = "55%";
+
+}
+
+document.addEventListener("click", function(e){
+
+const active =
+document.activeElement;
+
+if(
+    active &&
+    (
+        active.tagName === "INPUT" ||
+        active.tagName === "TEXTAREA"
+    )
+){
+
+    if(
+        !e.target.closest("input") &&
+        !e.target.closest("textarea") &&
+        !e.target.closest("button")
+    ){
+
+        active.blur();
+    }
+}
+
+});
+
+</script>
+
+</body>
+
+</html>

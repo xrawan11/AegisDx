@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1,
+maximum-scale=1,
+user-scalable=no">
+
+<title>AMR Analysis</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f8ff;
+    padding:40px;
+}
+
+.page{
+    max-width:1000px;
+    margin:auto;
+    background:white;
+    padding:45px;
+    border-radius:28px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.title{
+    color:#00296b;
+    font-size:48px;
+    font-weight:800;
+}
+
+.subtitle{
+    color:#5f6f87;
+    margin-top:14px;
+    line-height:1.8;
+    font-size:18px;
+}
+
+.section{
+    margin-top:30px;
+}
+
+.label{
+    color:#00296b;
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+input,
+textarea{
+
+    width:100%;
+    padding:18px;
+    border-radius:16px;
+    border:2px solid #dbe8ff;
+    outline:none;
+    font-size:16px;
+}
+
+textarea{
+    min-height:120px;
+    resize:none;
+}
+
+.buttons{
+    display:flex;
+    gap:18px;
+    margin-top:35px;
+}
+
+button{
+
+    background:#00296b;
+    color:white;
+    border:none;
+    padding:16px 28px;
+    border-radius:16px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:700;
+}
+
+.result-box{
+
+    margin-top:40px;
+
+    background:linear-gradient(to bottom right,#ffffff,#f3f8ff);
+
+    border-left:8px solid #00296b;
+
+    border-radius:24px;
+
+    padding:30px;
+
+    display:none;
+
+    box-shadow:0 12px 30px rgba(0,0,0,0.08);
+
+    animation:fadeIn 0.6s ease;
+}
+
+.result-title{
+
+    color:#00296b;
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:18px;
+}
+
+.result-item{
+
+    color:#5f6f87;
+    line-height:2;
+    font-size:17px;
+}
+
+.warning{
+    color:#d62828;
+    font-weight:700;
+}
+
+.safe{
+    color:#2a9d8f;
+    font-weight:700;
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+    }
+}
+
+.ai-badge{
+
+    display:inline-block;
+
+    background:#00296b;
+
+    color:white;
+
+    padding:8px 16px;
+
+    border-radius:30px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    margin-bottom:18px;
+}
+
+.loading{
+
+    display:none;
+
+    margin-top:30px;
+
+    text-align:center;
+}
+
+.spinner{
+
+    width:55px;
+
+    height:55px;
+
+    border:6px solid #dbe8ff;
+
+    border-top:6px solid #00296b;
+
+    border-radius:50%;
+
+    margin:auto;
+
+    animation:spin 1s linear infinite;
+}
+
+.loading-text{
+
+    margin-top:16px;
+
+    color:#00296b;
+
+    font-size:18px;
+
+    font-weight:700;
+}
+
+@keyframes spin{
+
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+.confidence-box{
+
+    margin-bottom:22px;
+
+    background:#eaf4ff;
+
+    color:#00296b;
+
+    padding:12px 18px;
+
+    border-radius:14px;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    width:fit-content;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+<div class="title">
+Antimicrobial Resistance Analysis
+</div>
+
+<div class="subtitle">
+AI-powered antimicrobial resistance evaluation and antibiotic recommendation.
+</div>
+
+<div class="section">
+
+<div class="label">
+Bacteria Name
+</div>
+
+<input id="bacteriaInput"
+type="text"
+placeholder="Enter bacteria name">
+
+</div>
+
+<div class="section">
+
+<div class="label">
+Antibiotic Used
+</div>
+
+<input id="antibioticInput"
+type="text"
+placeholder="Enter antibiotic">
+
+</div>
+
+<div class="section">
+
+<div class="label">
+Resistance Result
+</div>
+
+<input id="resistance"
+type="text"
+placeholder="Sensitive / Resistant">
+
+</div>
+
+<div class="section">
+
+<div class="label">
+Optional Patient History
+</div>
+
+<textarea placeholder="Optional"></textarea>
+
+</div>
+
+<div class="section">
+
+<div class="label">
+Infection Type
+</div>
+
+<input type="text"
+placeholder="Enter infection type">
+
+</div>
+
+<div class="buttons">
+
+<button onclick="analyzeResistance()">
+Analyze Resistance
+</button>
+
+<button onclick="recommendAlternatives()">
+Recommend Alternatives
+</button>
+
+</div>
+
+<div id="loadingBox" class="loading">
+
+<div class="spinner"></div>
+
+<div class="loading-text">
+AI is analyzing resistance...
+</div>
+
+</div>
+
+<div id="resultBox" class="result-box">
+
+<div class="ai-badge">
+AI Powered Analysis
+</div>
+
+<div class="result-title">
+AMR AI Result
+</div>
+
+<div class="confidence-box">
+
+AI Confidence:
+<span id="confidenceScore">
+0%
+</span>
+
+</div>
+
+<div class="result-item">
+Resistance Warning:
+<span id="warning"></span>
+</div>
+
+<div class="result-item">
+Suggested Antibiotics:
+<span id="alternatives"></span>
+</div>
+
+<div class="result-item">
+Resistance Trend:
+<span id="trend"></span>
+</div>
+
+<div class="result-item">
+AI Explanation:
+<span id="explanation"></span>
+</div>
+
+<div class="result-item">
+Gemma Clinical Explanation:
+<span id="gemmaExplanation"></span>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function analyzeResistance(){
+
+document.getElementById("loadingBox")
+.style.display = "block";
+
+document.getElementById("resultBox")
+.style.display = "none";
+
+let bacteria =
+document.getElementById("bacteriaInput")
+.value;
+let antibiotic =
+document.getElementById("antibioticInput")
+.value;
+
+fetch("https://shadow-residue-headcount.ngrok-free.dev/amr", {
+
+    method:"POST",
+
+    headers:{
+        "Content-Type":"application/json"
+    },
+
+    body:JSON.stringify({
+
+        bacteria:bacteria,
+        antibiotic:antibiotic
+    })
+})
+
+.then(response => response.json())
+
+.then(data => {
+
+document.getElementById("loadingBox")
+.style.display = "none";
+
+document.getElementById("resultBox")
+.style.display = "block";
+
+document.getElementById("confidenceScore")
+.innerHTML = data.confidence;
+
+document.getElementById("warning")
+.innerHTML = data.warning;
+
+document.getElementById("alternatives")
+.innerHTML = data.alternatives;
+
+document.getElementById("trend")
+.innerHTML = data.trend;
+
+document.getElementById("explanation")
+.innerHTML = data.explanation;
+document.getElementById("gemmaExplanation")
+.innerHTML = data.gemma_explanation;
+})
+
+.catch(error => {
+
+console.log(error);
+
+alert("Backend connection failed");
+
+document.getElementById("loadingBox")
+.style.display = "none";
+
+});
+
+}
+
+function recommendAlternatives(){
+
+document.getElementById("resultBox")
+.style.display = "block";
+
+document.getElementById("confidenceScore")
+.innerHTML = "89%";
+
+document.getElementById("warning")
+.innerHTML =
+"<span class='warning'>Alternative Needed</span>";
+
+document.getElementById("alternatives")
+.innerHTML =
+"Ceftriaxone, Meropenem";
+
+document.getElementById("trend")
+.innerHTML =
+"Emerging resistance detected.";
+
+document.getElementById("explanation")
+.innerHTML =
+"AI recommends alternative antibiotics based on resistance pattern.";
+
+}
+
+document.addEventListener("click", function(e){
+
+const active =
+document.activeElement;
+
+if(
+    active &&
+    (
+        active.tagName === "INPUT" ||
+        active.tagName === "TEXTAREA"
+    )
+){
+
+    if(
+        !e.target.closest("input") &&
+        !e.target.closest("textarea") &&
+        !e.target.closest("button")
+    ){
+
+        active.blur();
+    }
+}
+
+});
+
+</script>
+
+</body>
+
+</html>
