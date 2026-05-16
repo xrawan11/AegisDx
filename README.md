@@ -59,6 +59,8 @@ https://aegisdx.onrender.com
 
 ![Home](home.png)
 
+![Early Prediction](early.png)
+
 ![Diagnostic Section](diagnostic.png)
 
 ![AMR Analysis](amr.png)
