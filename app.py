@@ -167,21 +167,15 @@ def amr():
         "antibiotic_name": [antibiotic]
     })
 
-    prediction = model.predict(sample)[0]
+    gemma_text = (
+    "This antimicrobial resistance pattern may indicate reduced antibiotic effectiveness. "
+    "Clinical monitoring and alternative treatment strategies may be recommended."
+)
 
-
-    gemma_response = pipe(
-        f"""
-        Explain this antimicrobial resistance result clinically:
-
-        Resistance Prediction: {prediction:.1f}%
-
-        Give a short medical explanation.
-        """,
-        max_new_tokens=80
-    )
-
-    gemma_text = gemma_response[0]["generated_text"]
+    gemma_text = (
+    "This antimicrobial resistance pattern may indicate reduced antibiotic effectiveness. "
+    "Clinical monitoring and alternative treatment strategies may be recommended."
+)
 
     resistance_level = "Low"
 
