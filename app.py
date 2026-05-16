@@ -172,11 +172,6 @@ def amr():
     "Clinical monitoring and alternative treatment strategies may be recommended."
 )
 
-    gemma_text = (
-    "This antimicrobial resistance pattern may indicate reduced antibiotic effectiveness. "
-    "Clinical monitoring and alternative treatment strategies may be recommended."
-)
-
     resistance_level = "Low"
 
     if prediction >= 70:
