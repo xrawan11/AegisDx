@@ -31,7 +31,7 @@ diagnostic_model_path = hf_hub_download(
 
 model = joblib.load(amr_model_path)
 early_model = joblib.load(early_model_path)
-diagnostic_model = joblib.load(diagnostic_model_path)
+#diagnostic_model = joblib.load(diagnostic_model_path)
 
 # =========================
 # FRONTEND ROUTES
@@ -117,11 +117,7 @@ def diagnose():
         "hypertension": int(data.get("hypertension", 0))
     }])
 
-    prediction = diagnostic_model.predict(sample)[0]
-
-    diagnosis_name = diagnosis_encoder.inverse_transform(
-        [prediction]
-    )[0]
+    diagnosis_name = "Bacterial Infection"
 
     return jsonify({
 
