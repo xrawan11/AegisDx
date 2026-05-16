@@ -166,7 +166,7 @@ def amr():
     pipe = pipeline(
         "text-generation",
         model="google/gemma-2b-it",
-        token="YOUR_HF_TOKEN"
+        token=os.getenv("HF_TOKEN")
     )
 
     gemma_response = pipe(
