@@ -63,7 +63,6 @@ https://aegisdx.onrender.com
 
 ![AMR Analysis](amr.png)
 
-![Gemma Explanation](gemma.png)
 
 ---
 
