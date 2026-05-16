@@ -4,6 +4,13 @@ from flask_cors import CORS
 import joblib
 import pandas as pd
 import os
+from transformers import pipeline
+
+pipe = pipeline(
+    "text-generation",
+    model="google/gemma-2b-it",
+    token=os.getenv("HF_TOKEN")
+)
 
 app = Flask(__name__)
 
@@ -162,13 +169,6 @@ def amr():
 
     prediction = model.predict(sample)[0]
 
-    from transformers import pipeline
-
-    pipe = pipeline(
-        "text-generation",
-        model="google/flan-t5-base",
-        token=os.getenv("HF_TOKEN")
-    )
 
     gemma_response = pipe(
         f"""
