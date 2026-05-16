@@ -4,13 +4,6 @@ from flask_cors import CORS
 import joblib
 import pandas as pd
 import os
-from transformers import pipeline
-
-pipe = pipeline(
-    "text-generation",
-    model="google/gemma-2b-it",
-    token=os.getenv("HF_TOKEN")
-)
 
 app = Flask(__name__)
 
@@ -166,7 +159,8 @@ def amr():
         "pathogen": [bacteria],
         "antibiotic_name": [antibiotic]
     })
-
+    prediction = model.predict(sample)[0]
+    
     gemma_text = (
     "This antimicrobial resistance pattern may indicate reduced antibiotic effectiveness. "
     "Clinical monitoring and alternative treatment strategies may be recommended."
